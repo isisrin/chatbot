@@ -9,8 +9,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,//process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD//process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MICROSOFT_APP_ID || '',//process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD || ''//process.env.MICROSOFT_APP_PASSWORD
 });
 
 // Listen for messages from users
@@ -28,43 +28,35 @@ var bot = new builder.UniversalBot(connector);
 //     session.send("You said: %s", session.message.text);
 // });
 
-// bot.on('contactRelationUpdate', function (message) {
-//     if (message.action === 'add') {
-//         var name = message.user ? message.user.name : null;
-//         var reply = new builder.Message()
-//                 .address(message.address)
-//                 .text("Hello %s... Thanks for adding me.", name || 'there');
-//         bot.send(reply);
+bot.on('contactRelationUpdate', function (message) {
+    if (message.action === 'add') {
+        var name = message.user ? message.user.name : null;
+        var reply = new builder.Message()
+                .address(message.address)
+                .text("Hello %s... Thanks for adding me.", name || 'there');
+        bot.send(reply);
+    }
+});
+
+// bot.dialog('/', [
+//     function (session, args, next) {
+//         if (!session.userData.name) {
+//             session.beginDialog('/profile');
+//         } else {
+//             next();
+//         }
+//     },
+//     function (session, results) {
+//         session.send('안뇽하세욤! %s!', session.userData.name);
 //     }
-// });
-
-bot.dialog('/', [
-    function (session, args, next) {
-        if (!session.userData.name) {
-          bot.on('contactRelationUpdate', function (message) {
-              if (message.action === 'add') {
-                  var name = message.user ? message.user.name : null;
-                  var reply = new builder.Message()
-                          .address(message.address)
-                          .text("Hello %s... Thanks for adding me.", name || 'there');
-                  bot.send(reply);
-              }
-          });
-        } else {
-            next();
-        }
-    },
-    function (session, results) {
-        session.send('안뇽하세욤! %s!', session.userData.name);
-    }
-]);
-
-bot.dialog('/profile', [
-    function (session) {
-        builder.Prompts.text(session, '하이 모두들 안녕? 너는 누구닙?');
-    },
-    function (session, results) {
-        session.userData.name = results.response;
-        session.endDialog();
-    }
-]);
+// ]);
+//
+// bot.dialog('/profile', [
+//     function (session) {
+//         builder.Prompts.text(session, '하이 모두들 안녕? 너는 누구닙?');
+//     },
+//     function (session, results) {
+//         session.userData.name = results.response;
+//         session.endDialog();
+//     }
+// ]);
