@@ -21,8 +21,31 @@ server.get('/', (req, res) => {
 });
 
 
-
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
-var bot = new builder.UniversalBot(connector, function (session) {
-    session.send("You said: %s", session.message.text);
-});
+var bot = new builder.UniversalBot(connector);
+// var bot = new builder.UniversalBot(connector, function (session) {
+//     session.send("You said: %s", session.message.text);
+// });
+
+bot.dialog('/', [
+    function (session, args, next) {
+        if (!session.userData.name) {
+            session.beginDialog('/profile');
+        } else {
+            next();
+        }
+    },
+    function (session, results) {
+        session.send('안뇽하세욤! %s!', session.userData.name);
+    }
+]);
+
+bot.dialog('/profile', [
+    function (session) {
+        builder.Prompts.text(session, '하이 모두들 안녕? 너는 누구닙?');
+    },
+    function (session, results) {
+        session.userData.name = results.response;
+        session.endDialog();
+    }
+]);
