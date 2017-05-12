@@ -16,6 +16,7 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users
 server.post('/api/messages', connector.listen());
 
+//테스트용
 server.get('/', (req, res) => {
   res.send(`Hello World! ${process.env.MICROSOFT_APP_ID}`);
 });
@@ -36,7 +37,15 @@ bot.dialog('/', [
         }
     },
     function (session, results) {
-        session.send('안뇽하세욤! %s!', session.userData.name);
+      var msg = new builder.Message(session)
+            .text("Thank you for expressing interest in our premium golf shirt! What color of shirt would you like?")
+            .suggestedActions([
+                builder.CardAction.imBack(session, "productId=1&color=green", "Green"),
+                builder.CardAction.imBack(session, "productId=1&color=blue", "Blue"),
+                builder.CardAction.imBack(session, "productId=1&color=red", "Red")
+            ]);
+        session.send(msg);
+        // session.send('안뇽하세욤! %s!', session.userData.name);
     }
 ]);
 
