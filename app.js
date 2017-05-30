@@ -27,10 +27,10 @@ app.use('/', index);
 app.use('/users', users);
 
 
-app.get('/keyboard', (req, res) => {
+app.get('/keyboard/', (req, res) => {
   console.log('키보드로 왔군요');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.status(200).send({ type : "text", buttons : ["안녕", "헬로우", "콘니치와"]});
+  res.status(200).send({ 'type' : "text", 'buttons' : ["안녕", "헬로우", "콘니치와"]});
 });
 
 app.get('/favicon.ico', (req, res) => {
